@@ -3,7 +3,8 @@
 from django.conf.urls import patterns
 
 urlpatterns = patterns('home_application.views',
-    (r'^$', 'home'),
+    #(r'^$', 'home'),
+    (r'^$', 'index'),
     (r'^dev-guide/$', 'dev_guide'),
     (r'^contactus/$', 'contactus'),
 )

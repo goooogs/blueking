@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from common.mymako import render_mako_context
+from django.http import HttpResponse
+
+def index(request):
+    '''
+    Hello World
+    '''
+    return HttpResponse('[ID: lekoood<br />QQ: @□》:______T。]<br />Hello World!')
 
 
 def home(request):
