@@ -7,7 +7,7 @@ def index(request):
     '''
     Hello World
     '''
-    return HttpResponse('[ID: lekoood<br />QQ: @□》:______T。]<br />Hello World!')
+    return HttpResponse('ID: lekoood<br />QQ: @□》:______T。<br />Hello World!')
 
 
 def home(request):
