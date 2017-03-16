@@ -29,3 +29,13 @@ def contactus(request):
     联系我们
     """
     return render_mako_context(request, '/home_application/contact.html')
+
+
+'''
+Preview page
+'''
+def preview(request):
+    if request.method == "POST":
+        return HttpResponse('congratulation！')
+    else:
+        return render_mako_context(request, 'polls/blueking_preview.html')
