@@ -38,4 +38,4 @@ def preview(request):
     if request.method == "POST":
         return HttpResponse('congratulation！')
     else:
-        return render_mako_context(request, 'polls/blueking_preview.html')
+        return render_mako_context(request, '/home_application/blueking_preview.html')
