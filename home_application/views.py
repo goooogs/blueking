@@ -57,7 +57,7 @@ def scratch(url='https://www.zhihu.com/explore'):
 
 
 from django.db import IntegrityError, transaction
-from . import Question, Answer
+from .models import Question, Answer
 import lxml.html, re
 @transaction.atomic
 def html_dump2db(html):
