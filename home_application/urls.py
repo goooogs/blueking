@@ -8,5 +8,5 @@ urlpatterns = patterns('home_application.views',
     (r'^preview/$', 'preview'),
     (r'^dev-guide/$', 'dev_guide'),
     (r'^contactus/$', 'contactus'),
-    (r'^daily_hot/$', 'daily_hot'),
+    (r'^daily_hot/$', 'get_daily_hot_list'),
 )
