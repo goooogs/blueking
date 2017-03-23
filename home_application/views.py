@@ -111,3 +111,29 @@ def get_daily_hot_list(request):
 
     return render_mako_context(request, '/home_application/daily_hot.html', dictionary=context)
 
+
+'''
+--------------------------------------------------------
+- 后台返回前台上传的文件MD5
+--------------------------------------------------------
+'''
+import hashlib
+def file_md5sum(request):
+    """Populate self._post and self._files if the content-type is a form type"""
+    if request.method != 'POST':
+        return render_mako_context(request, '/home_application/file_md5sum.html')
+
+    context = {}
+    for file_name, file_stream in request.FILES.iteritems():
+        name = request.FILES[file_name].name
+        md5sum = hashlib.md5(file_stream.read()).hexdigest()
+        context = {
+            'upload_file_name': name,
+            'upload_file_md5': md5sum,
+        }
+        break # 暂时只处理一个文件
+
+    return HttpResponse(context['upload_file_md5'])
+
+
+

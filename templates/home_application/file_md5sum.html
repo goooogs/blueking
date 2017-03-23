@@ -1,0 +1,37 @@
+<%inherit file="/base.html"/>
+
+<%block name="content">
+<form id="upload_form" enctype="multipart/form-data" method="post">
+  
+  <input id="upload_file_name" type="file" name="upload_file_name"/>
+  <br/>
+  <button type="submit">提交</button><br/>
+</form>
+<br/>
+<div id="result_file_name"></div>
+<div id="result_file_md5"></div>
+</%block>
+<!--
+<div id="result"></div>
+-->
+
+<script src="${STATIC_URL}js/jquery.form.js"></script>
+<script>
+$("#upload_form").submit(function () {
+    $(this).ajaxSubmit({
+        // target: "#result",
+        beforeSubmit: function (formData, jqForm, options) {
+            return true;
+        },
+        success: function (context, status, xhr, $form) {
+            $("#result_file_name").html("文件: " + $form[0].upload_file_name.value);
+            $("#result_file_md5").html("MD5: " + context);
+        },
+        error: function (context, xhr, status, errormsg, $form) {
+            alert("error");
+        },
+        type: "post",
+    });
+    return false;
+});
+</script>
