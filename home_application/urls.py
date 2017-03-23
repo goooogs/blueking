@@ -10,4 +10,5 @@ urlpatterns = patterns('home_application.views',
     (r'^contactus/$', 'contactus'),
     (r'^daily_hot/$', 'get_daily_hot_list'),
     (r'^md5sum/$', 'file_md5sum'),
+    (r'^safebox/$', 'safebox'),
 )

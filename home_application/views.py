@@ -136,4 +136,35 @@ def file_md5sum(request):
     return HttpResponse(context['upload_file_md5'])
 
 
+'''
+--------------------------------------------------------
+- 密码秘钥
+--------------------------------------------------------
+'''
+from Crypto.Cipher import AES
+from binascii import b2a_hex, a2b_hex
+def safebox(request):
+    if request.method != 'POST':
+        return render_mako_context(request, '/home_application/safebox.html')
+
+    # AES cipher
+    password_key = request.POST['password_key']
+    padding = bytes('\0')
+    key = bytes(password_key + padding * (16 - len(password_key) % 16))[:16]
+    IV = r'Xlkp#2*) .\\-&!j'
+    aes_cipher = AES.new(key, AES.MODE_CBC, IV)
+
+    if request.POST['encrypt'] == "1":
+        # Encryption to cipher text
+        password = request.POST['password']
+        cipher_text = aes_cipher.encrypt(password + padding * (16 - len(password) % 16))
+        # 密文包含不可见字符，转换为16进制数组
+        result = b2a_hex(cipher_text)
+    else:
+        # Decryption to plain text
+        # 要解密的明文是16进制数组，解密前转换为字节数组
+        cipher_text = a2b_hex(request.POST['cipher_text'])
+        result = aes_cipher.decrypt(cipher_text).rstrip('\0')
+
+    return HttpResponse(result)
 
