@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from common.mymako import render_mako_context
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.db import OperationalError
+from django.db.models import ObjectDoesNotExist
+from .models import CalcHistory
 
 def index(request):
     '''
@@ -14,7 +17,79 @@ def home(request):
     """
     首页
     """
-    return render_mako_context(request, '/home_application/home.html')
+    if request.method == 'POST':
+        result_item = [] # 历史计算记录条目
+        try:
+            multiplier = int(request.POST['multiplier'])
+            multiplicand = int(request.POST['multiplicand'])
+            calc_result = multiplier * multiplicand
+            item = CalcHistory.objects.create(multiplier=multiplier, multiplicand=multiplicand, calc_result=calc_result)
+            result_item = [{
+                'id': item.id,
+                'multiplier': multiplier,
+                'multiplicand': multiplicand,
+                'calc_result': calc_result,
+            }]
+            result_state = True
+        except ValueError:
+            result_state = False
+
+        data = {
+            'result_state': result_state,
+            'result_item': result_item
+        }
+        return JsonResponse(data=data)
+    else:
+        items = CalcHistory.objects.filter(is_deleted=False).order_by('-id')
+        content = {
+            'items': items
+        }
+        return render_mako_context(request, '/home_application/home.html', content)
+
+
+def calc_history_edit(request):
+    """
+    编辑历史记录
+    """
+    if request.method == 'POST':
+        action = request.POST['action']
+        try:
+            id = int(request.POST['id'])
+        except ValueError:
+            pass
+
+        try:
+            if action == "edit":
+                # 修改
+                multiplier = int(request.POST['multiplier'])
+                multiplicand = int(request.POST['multiplicand'])
+                calc_result = int(request.POST['calc_result'])
+
+                item = CalcHistory.objects.get(id=id)
+                item.multiplier = multiplier
+                item.multiplicand = multiplicand
+                item.calc_result = calc_result
+                item.save()
+            elif action == "delete":
+                # 逻辑删除
+                item = CalcHistory.objects.get(id=id)
+                # item.delete()
+                item.is_deleted = True
+                item.save()
+            elif action == "restore":
+                # 逻辑恢复
+                item = CalcHistory.objects.get(id=id)
+                item.is_deleted = False
+                item.save()
+            else:
+                pass
+        except ValueError:
+            pass
+        except ObjectDoesNotExist:
+            pass
+        except OperationalError:
+            pass
+        return JsonResponse({})
 
 
 def dev_guide(request):

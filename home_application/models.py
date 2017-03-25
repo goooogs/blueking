@@ -24,3 +24,11 @@ class Answer(models.Model):
     href = models.CharField(u'href', max_length=1024)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
+
+class CalcHistory(models.Model):
+    """docstring for CalcHistory"""
+    multiplier = models.IntegerField(u'乘数')
+    multiplicand = models.IntegerField(u'被乘数')
+    calc_result = models.IntegerField(u'计算结果')
+    is_deleted = models.BooleanField(u'是否已删除', default=False)
+

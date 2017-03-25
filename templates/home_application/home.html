@@ -1,19 +1,235 @@
-<%inherit file="/base.html"/>
+<!DOCTYPE html>
+<html>
 
-<%block name="content">
-	<div>
-		<!-- 蓝鲸智云开发框架说明  Start -->
-		<div>
-			<h3>蓝鲸智云开发框架<small>助力你的自动化</small></h3>
-		</div>
-		<hr>
-		<div class="mt30">
-			<p>您现在打开的应用是由蓝鲸智云示例代码生成的，该示例代码称为“APP开发框架”。</p>
-			<p>蓝鲸智云集成平台（PaaS）提供了完善的前后台开发框架、调度引擎、公共组件等模块，帮助业务的产品和技术人员快速构建低成本、免运维的支撑工具和运营系统。</p>
-			<p>若想体验快速开发应用的功能，请前往<a href="${BK_PAAS_HOST}" target="_blank">“开发者中心”</a>。</p>
-		</div>
-		<!-- 蓝鲸智云开发框架说明  End -->
-	</div>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <!-- 若您需要使用Kendo UI Professional，请联系版权人获得合法的授权或许可。 -->
+    <!-- Bootstrap css -->
+    <link href="${STATIC_URL}static_api/v3/assets/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <!-- kendo ui css -->
+    <link href="${STATIC_URL}static_api/v3/assets/kendoui-2015.2.624/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="${STATIC_URL}static_api/v3/assets/kendoui-2015.2.624/styles/kendo.default.min.css" rel="stylesheet">
+    <!-- font-awesome -->
+    <link href="${STATIC_URL}static_api/v3/assets/fontawesome/css/font-awesome.css" rel="stylesheet">
+    <!--蓝鲸提供的公用样式库 -->
+    <link href="${STATIC_URL}static_api/v3/bk/css/bk.css?v=1.0.1" rel="stylesheet">
+    <link href="${STATIC_URL}static_api/v3/bk/css/bk_pack.css" rel="stylesheet">
+    <!-- 如果要使用Bootstrap的js插件，必须先调入jQuery -->
+    <script src="${STATIC_URL}static_api/v3/assets/js/jquery-1.10.2.min.js"></script>
+    <!-- 包括所有bootstrap的js插件或者可以根据需要使用的js插件调用　-->
+    <script src="${STATIC_URL}static_api/v3/assets/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <!-- 包括所有kendoui的js插件或者可以根据需要使用的js插件调用　-->
+    <script src="${STATIC_URL}static_api/v3/assets/kendoui-2015.2.624/js/kendo.all.min.js"></script>
+    <script src="${STATIC_URL}static_api/v3/bk/js/bk.js"></script>
+    <!-- 数据埋点统计 -->
+    <script src="${STATIC_URL}static_api/analysis.js"></script>
+    <!-- 以下两个插件用于在IE8以及以下版本浏览器支持HTML5元素和媒体查询，如果不需要用可以移除 -->
+    <!--[if lt IE 9]><script src="${STATIC_URL}static_api/v3/assets/js/html5shiv.min.js"></script><script src="${STATIC_URL}static_api/v3/assets/js/respond.min.js"></script><![endif]-->
+    <script src="${STATIC_URL}js/csrftoken.js"></script>
+    <script src="${STATIC_URL}js/jquery.tabledit.js"></script>
+</head>
 
-</%block>
+<body class="bg-white" data-bg-color="bg-white">
+    <div class="king-page-box">
+        <div class="king-layout1-header">
+            <nav role="navigation" class="navbar navbar-default king-horizontal-nav2    f14 ">
+                <div class="container " style="width:100%;overflow:hidden;">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed navbar-toggle-sm" data-toggle="collapse" data-target="#king-horizontal-nav2-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="javascript:;">
+                            <img src="${STATIC_URL}static_api/v3/bk/images/logo3.png" alt="" class="logo"> </a>
+                    </div>
+                    <div class="collapse navbar-collapse navbar-responsive-collapse" id="king-horizontal-nav2-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="king-navbar-active"><a href="javascript:void(0);">首页</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="javascript:;">
+                                    <span>管理者</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="king-layout2-main mt15" style="width:960px;">
+            <div class="king-block king-block-bordered king-block-themed mb0">
+                <div class="king-block-header king-info">
+                    <ul class="king-block-options">
+                        <li>
+                            <!-- <button type="button"><i class="fa fa-cog"></i></button> -->
+                        </li>
+                    </ul>
+                    <h3 class="king-block-title">乘法计算器 (ID: lekoood QQ: @□》:______T。)</h3>
+                </div>
+                <div class="king-block-content">
+                    <form class="form-horizontal">
+                        <div class="form-group clearfix ">
+                            <label class="col-sm-3 control-label bk-lh30 pt0">乘数：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control bk-valign-top" id="multiplier" placeholder="ID: lekoood"> </div>
+                        </div>
+                        <div class="form-group clearfix ">
+                            <label class="col-sm-3 control-label bk-lh30 pt0">被乘数：</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control bk-valign-top" id="multiplicand" placeholder="QQ: @□》:______T。"> </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <div class="col-sm-9 col-sm-offset-3">
+                                <button type="button" class="king-btn mr10  king-success" id="calc">计算</button>
+                                <button type="button" class="king-btn king-default" id="reset">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="king-widget1 king-widget-info m0">
+                        <div class="king-widget2-content p25">
+                            <div class="king-counter king-counter-lg">
+                                <div class="king-counter-label text-uppercase">结果</div>
+                                <span class="king-counter-number" id="calc_result">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 设置面板Start -->
+                    <!-- 设置面板End -->
+                </div>
+            </div>
+            <form class="form-vertical p15">
+                <div class="form-group ">
+                    <label>搜索：</label>
+                    <input type="text" class="form-control" id="text_search" placeholder="ID: lekoood QQ: @□》:______T。">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="king-btn mr10  king-info" id="btn_search">搜索</button>
+                </div>
+            </form>
+            <div class="panel panel-default mb0">
+                <div class="panel-heading"> 历史记录 (ID: lekoood QQ: @□》:______T。)</div>
+                <div class="panel-body">
+                    <table class="table mb0 pr15 ranger-box2 table-striped  table-header-bg table-out-bordered table-hover  table-striped  table-header-bg table-out-bordered table-hover " id="calc_histtory">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">ID</th>
+                                <th style="width: 15%;">乘数</th>
+                                <th style="width: 15%;">被乘数</th>
+                                <th style="width: 15%;">结果</th>
+                                <th class="tabledit-toolbar-column">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        % for i in items:
+                        <tr>
+                            <td>${i.id}</td>
+                            <td>${i.multiplier}</td>
+                            <td>${i.multiplicand}</td>
+                            <td>${i.calc_result}</td>
+                        </tr>
+                        % endfor
+                        </tbody>
+                    </table>
+                    <template id="tpl_14904127714142">
+                      <tr id="#id#">
+                        <td>
+                            <span class="tabledit-span tabledit-identifier">#id#</span>
+                            <input class="tabledit-input tabledit-identifier" type="hidden" name="id" value="#id#" disabled="">
+                        </td>
+                            <td class="tabledit-view-mode">
+                            <span class="tabledit-span">#multiplier#</span>
+                            <input class="tabledit-input form-control input-sm" type="text" name="multiplier" value="#multiplier#" style="display: none;" disabled="">
+                        </td>
+                        <td class="tabledit-view-mode">
+                            <span class="tabledit-span">#multiplicand#</span>
+                            <input class="tabledit-input form-control input-sm" type="text" name="multiplicand" value="#multiplicand#" style="display: none;" disabled="">
+                        </td>
+                        <td class="tabledit-view-mode">
+                            <span class="tabledit-span">#calc_result#</span>
+                            <input class="tabledit-input form-control input-sm" type="text" name="calc_result" value="#calc_result#" style="display: none;" disabled="">
+                        </td>
+                        <td style="white-space: nowrap; width: 1%;">
+                        <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
+                           <div class="btn-group btn-group-sm" style="float: none;">
+                                <button type="button" class="tabledit-edit-button btn btn-sm btn-default" style="float: none;"><span class="glyphicon glyphicon-pencil"></span></button>
+                                <button type="button" class="tabledit-delete-button btn btn-sm btn-default" style="float: none;"><span class="glyphicon glyphicon-trash"></span></button>
+                            </div>
+                           <button type="button" class="tabledit-save-button btn btn-sm btn-success" style="display: none; float: none;">Save</button>
+                           <button type="button" class="tabledit-confirm-button btn btn-sm btn-danger" style="display: none; float: none;">Confirm</button>
+                           <button type="button" class="tabledit-restore-button btn btn-sm btn-warning" style="display: none; float: none;">Restore</button>
+                           </div>
+                       </td>
+                     </tr>
+                    </template>
+                    <!-- 设置面板End -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function renderTpl(str, cfg) {
+            var re = /(#(.+?)#)/g;
 
+            return str.replace(re, function() {
+                var val = cfg[arguments[2]]+'';
+                if(typeof val == 'undefined') {
+                    val = '';
+                }
+                return val;
+            });
+        }
+
+        $(function(){
+            $("#calc").click(function(){
+                var multiplier = $("#multiplier").val();
+                var multiplicand = $("#multiplicand").val();
+                $.post(
+                    url = '',
+                    data = {
+                        'multiplier': multiplier,
+                        'multiplicand': multiplicand
+                    },
+                    callback = function(response){
+                        if(response.result_state) {
+                            $("#calc_result").html(response.result_item[0].calc_result);
+
+                            var _html = '';
+                            var list = response.result_item;
+                            var tpl = $('#tpl_14904127714142').html();
+                            for (var i=0,len=list.length; i < len; i++){
+                                var item = list[i];
+                                _html += renderTpl(tpl, item)
+                            }
+                            $('.ranger-box2 tbody').prepend(_html);
+                        }
+                    },
+                    type = 'json');
+            });
+
+            this_table = $('#calc_histtory').Tabledit({
+                url: 'edit/',
+                columns: {
+                    identifier: [0, 'id'],
+                    editable: [[1, 'multiplier'], [2, 'multiplicand'], [3, 'calc_result']]
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>
+<!--
+
+                        <tr>
+                            <td>#id#</td>
+                            <td>#multiplier#</td>
+                            <td>#multiplicand#</td>
+                            <td>#calc_result#</td>
+                        </tr>
+-->
