@@ -14,6 +14,9 @@ class ConnectionInfo(models.Model):
     database = models.CharField(u'数据库', max_length=20)
     charset = models.CharField(u'连接字符集', max_length=20, default='utf8')
 
+    def __str__(self):
+        return self.name
+
 
 class StorageRegistry(models.Model):
     """存储过程注册信息"""
@@ -21,12 +24,15 @@ class StorageRegistry(models.Model):
     description = models.CharField(u'描述')
     storage_name = models.CharField(u'存储过程名称', max_length=100)
     input_arguments = models.CharField(u'参数', max_length=100)
+    db_info = models.ForeignKey(ConnectionInfo, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class History(models.Model):
     '''操作历史'''
-    login_user = models.CharField(u'操作用户', max_length=30)
-    connection_info = models.CharField(u'连接信息', max_length=300)
-    detail = models.CharField(u'操作内容', max_length=300)
+    operator = models.CharField(u'操作用户', max_length=30)
+    info = models.CharField(u'操作信息', max_length=300)
     time = models.DateTimeField(u'时间', auto_now=True)
 

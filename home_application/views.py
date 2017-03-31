@@ -216,6 +216,7 @@ def file_md5sum(request):
 - 密码秘钥
 --------------------------------------------------------
 '''
+'''
 from Crypto.Cipher import AES
 from binascii import b2a_hex, a2b_hex
 def safebox(request):
@@ -242,4 +243,4 @@ def safebox(request):
         result = aes_cipher.decrypt(cipher_text).rstrip('\0')
 
     return HttpResponse(result)
-
+'''
