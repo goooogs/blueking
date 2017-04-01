@@ -7,7 +7,7 @@ from django.db import models
 class ConnectionInfo(models.Model):
     """数据库连接信息"""
     name = models.CharField(u'名称', max_length=30, unique=True, null=False)
-    host = models.CharField(u'数据库主机', max_length=15)
+    host = models.GenericIPAddressField(u'数据库主机')
     port = models.IntegerField(u'端口', default=3306)
     user = models.CharField(u'用户名', max_length=30)
     password = models.CharField(u'密码', max_length=40)
@@ -21,10 +21,19 @@ class ConnectionInfo(models.Model):
 class StorageRegistry(models.Model):
     """存储过程注册信息"""
     name = models.CharField(u'名称', max_length=30, unique=True, null=False)
-    description = models.CharField(u'描述')
+    description = models.CharField(u'描述', max_length=100)
     storage_name = models.CharField(u'存储过程名称', max_length=100)
-    input_arguments = models.CharField(u'参数', max_length=100)
-    db_info = models.ForeignKey(ConnectionInfo, on_delete=models.CASCADE)
+    connection_info = models.ForeignKey(ConnectionInfo, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class StorageArgument(models.Model):
+    """存储过程参数信息"""
+    name = models.CharField(u'参数名称', max_length=30, unique=True, null=False)
+    description = models.CharField(u'参数说明', max_length=100)
+    storage = models.ForeignKey(StorageRegistry, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
