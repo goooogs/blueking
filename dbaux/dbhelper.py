@@ -43,20 +43,26 @@ def call_procedure(storage_id, args=None):
     """
     调用存储过程
     :param storage_id: 已注册的存储过程ID
-    :param args: 存储过程参数，dict类型
+    :param args: 存储过程参数，dict/list类型
     :return: 标识操作是否成功的json数据
     """
-    args = [v for v in args.itervalues()] if isinstance(args, dict) else None
+    if isinstance(args, dict):
+        args = [v for v in args.itervalues()]
+    elif isinstance(args, list):
+        args = args
+    else:
+        args = None
     response = {}
 
+    storage = StorageRegistry.objects.get(id=storage_id)
     conn = get_connection_by_storage_id(storage_id=storage_id)
 
     try:
         with conn.cursor() as cursor:
             if args:
-                cursor.callproc('update_phone_number_by_uid', args)
+                cursor.callproc(storage.storage_name, args)
             else:
-                cursor.callproc('update_phone_number_by_uid')
+                cursor.callproc(storage.storage_name)
             conn.commit()
             if (args and cursor.rowcount == 1) or (not args and cursor.rowcount >= 1):
                 # 带参数的只能影响一条记录，不带参数的至少影响一条记录

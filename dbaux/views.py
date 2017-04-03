@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import json
-from common.mymako import render_mako_context
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
+from common.mymako import render_mako_context
 from django.http import HttpResponse
+# from django.shortcuts import render
 from django.template import loader
 from django.db.models import ObjectDoesNotExist
-from .models import ConnectionInfo, StorageRegistry, StorageArgument
+from .models import ConnectionInfo, StorageRegistry
 from . import dbhelper
 
 # Create your views here.
@@ -31,11 +32,10 @@ def index(request):
     """
     首页界面展示
     """
-    # storage_all = StorageRegistry.objects.all()
-    # content = {
-    #     'items': storage_all,
-    # }
-    return render_mako_context(request, '/dbaux/index.html')
+    content = {
+        'items': StorageRegistry.objects.all(),
+    }
+    return render_mako_context(request, '/dbaux/index.html', content)
 
 
 @require_GET
@@ -154,17 +154,6 @@ def system_config_add(request, object_type):
             except ObjectDoesNotExist:
                 response['result'] = False
                 response['message'] = u'添加失败：指定的数据库连接不存在！'
-        elif object_type == "3":
-            """添加 StorageArgument"""
-            storage_id = int(request.POST['storage_id'])
-            try:
-                storage = StorageRegistry.objects.get(id=storage_id)
-                for k, v in request.POST['args']:
-                    storage.storageargument_set.create(name=k, description=v.replace('&nbsp;', ' '))
-                response['result'] = True
-            except ObjectDoesNotExist:
-                response['result'] = False
-                response['message'] = u'添加失败：指定的存储过程不存在！'
         else:
             response['result'] = False
             response['message'] = illegal_error_message
@@ -186,6 +175,8 @@ def system_config_edit(request):
 def system_config_detail(request, object_type, id):
     """
     根据对象类型和id获取详细信息
+    object_type: 允许进行操作的对象类型
+    id: 要操作的对象ID
     """
     illegal_error_message = u'不合法的操作'
     response = {}
@@ -226,19 +217,44 @@ def system_config_detail(request, object_type, id):
     return HttpResponse(json.dumps(response))
 
 
-@require_POST
-def call_procedure(request):
+@require_http_methods(["GET", "POST"])
+def call_procedure(request, functional_id):
     """
     操作执行接口，调用存储过程
-    storage_id: 注册的存储过程ID
+    functional_id: 注册的存储过程ID
     args: 从前端页面获取的存储过程参数，dict类型
     """
-    # operator = request.user.username
-    storage_id = request.POST['storage_id']
-    args = request.POST['args']
-    response = dbhelper.call_procedure(storage_id=storage_id, args=args)
+    response = {}
+    storage_id = functional_id
 
-    return HttpResponse(response)
+    if request.method == "GET":
+        template_file = 'dbaux/storage_execute_tmpl.html'
+        content = {
+            'item': StorageRegistry.objects.get(id=storage_id),
+        }
+        t = loader.get_template(template_file)
+        response['data'] = t.render(content, request)
+        response['result'] = True
+    elif request.method == "POST":
+        # operator = request.user.username
+        args = json.loads(request.POST['args'])
+
+        try:
+            arg_list = []
+            storage = StorageRegistry.objects.get(id=storage_id)
+            expect_args = storage.storageargument_set.all()
+            if len(expect_args) == len(args):
+                for arg_index in ["%s" % i for i in range(1, len(args) + 1)]:
+                    arg_list.append(args[arg_index])
+                    # for k, v in args[arg_index].items():
+                    #     arg_list.append(k)
+                    #     break
+            response = dbhelper.call_procedure(storage_id, arg_list)
+        except ObjectDoesNotExist:
+            response['result'] = False
+            response['message'] = u'执行失败：该功能不存在！'
+
+    return HttpResponse(json.dumps(response))
 
 
 @require_POST
@@ -254,9 +270,3 @@ def get_procedure_by_connection_info_id(request):
         response['result'] = False
     return HttpResponse(json.dumps(response))
 
-
-@require_POST
-def get_procedure_arguments_by_storage_id(request):
-    """获存储过程中定义的参数"""
-    # operator = request.user.username
-    pass

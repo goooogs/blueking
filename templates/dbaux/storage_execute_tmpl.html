@@ -1,0 +1,73 @@
+<!--HTML-->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="king-block king-block-bordered">
+            <div class="king-block-header king-gray-light">
+                <ul class="king-block-options">
+                    <li>
+                        <button type="button"><i class="fa fa-cog"></i></button>
+                    </li>
+                </ul>
+                <h3 class="king-block-title">{{ item.name }}</h3>
+            </div>
+            <div class="king-block-content">
+                <!-- 水平布局表单-1 Start -->
+                <form class="form-horizontal">
+                    <div id="inputStorageArgumentsContainer">
+                        {% for arg in item.storageargument_set.all %}
+                        <div class="form-group">
+                            <div class="col-sm-7 col-sm-offset-3">
+                                <label for="inputStorageArgumentName{{ arg.index }}">{{ arg.description }}：</label>
+                                <input type="text" id="inputStorageArgumentName{{ arg.index }}" placeholder="{{ arg.name }}">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-7 col-sm-offset-3">
+                            <input type="button" class="king-btn king-success mr10" id="btn_ok" value="执行">
+                        </div>
+                    </div>
+                </form>
+                <!-- 水平布局表单-1 End -->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('#btn_ok').click(function () {
+            var args = '';
+            var id_index = $('#inputStorageArgumentsContainer > .form-group').length;
+            for (var i = 1; i <= id_index; i++) {
+                var val = $('#inputStorageArgumentName' + i).val().trim();
+                args += "\"" + i + "\"" + ":\"" + val + "\",";
+            }
+            args = "{" + args.replace(/,\s*$/g, '') + "}";
+
+            data = {
+                'args': args,
+            };
+
+            $.ajax({
+                type: "POST",
+                url: window.location.pathname + "functional/" + {{ item.id }} +"/",
+                data: data,
+                dataType: "json",
+                success: function (response) {
+                    if (response.result) {
+                        $topBar({
+                            text: '操作成功！',
+                            setClass: 'bg-success',
+                            timeOut: 5000
+                        });
+                    } else {
+                        $topBar({
+                            text: '操作失败: ' + response.message,
+                            setClass: 'bg-danger',
+                            timeOut: 5000
+                        });
+                    }
+                },
+            });
+        });
+    </script>
+</div>

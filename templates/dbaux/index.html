@@ -59,13 +59,14 @@
                                     <i class="fa fa-gear"></i>综合业务
                                     <span class="pull-right"><i class="fa fa-angle-down"></i></span>
                                 </a>
-                                <ul class="sub-menu" style="display: block;">
-                                    <li>
-                                        <a href="javascript:;">修改手机号<i class="fa fa-chevron-right pull-right"></i></a>
+                                <ul class="sub-menu" id="functional-sub-menu" style="display: block;">
+                                % if items:
+                                % for item in items:
+                                    <li value="${item.id}">
+                                        <a href="javascript:;">${item.name}<i class="fa fa-chevron-right pull-right"></i></a>
                                     </li>
-                                    <li>
-                                        <a href="javascript:;">修改银行卡<i class="fa fa-chevron-right pull-right"></i></a>
-                                    </li>
+                                % endfor
+                                % endif
                                 </ul>
                             </li>
                             <li class="has_submenu">
@@ -123,7 +124,35 @@
             return false;
         });
 
-        $("#system-config-sub-menu > li").click(function (e) {
+        // 功能区
+        $("#functional-sub-menu > li").click(function () {
+            var functional_id = $(this).val();
+            var href = window.location.href;
+            var param_index = href.indexOf("?");
+            var location = "";
+            if (param_index > 0)
+                location = href.substr(0, param_index);
+            else
+                location = href;
+            location = location.replace(/\/$/g, "")
+
+            $.get(
+                url = location + '/functional/' + functional_id + '/',
+                function(response, textStatus){
+                    if(response.result) {
+                        $("#content_14904127718185").html(response.data);
+                    } else {
+                        $topBar({
+                            text: '操作失败: ' + response.message,
+                            setClass: 'bg-danger'
+                        });
+                    }
+                },
+                'json');
+        });
+
+        // 系统配置
+        $("#system-config-sub-menu > li").click(function () {
             var object_type = $(this).val();
             var href = window.location.href;
             var param_index = href.indexOf("?");
@@ -137,7 +166,6 @@
             $.get(
                 url = location + '/system_config/list/' + object_type + '/',
                 function(response, textStatus){
-                    var a=1;
                     if(response.result) {
                         $("#content_14904127718185").html(response.data);
                     } else {
