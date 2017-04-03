@@ -1,0 +1,188 @@
+<!--HTML-->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="king-block king-block-bordered">
+            <div class="king-block-header king-gray-light">
+                <ul class="king-block-options">
+                    <li>
+                        <button type="button"><i class="fa fa-cog"></i></button>
+                    </li>
+                </ul>
+                <h3 class="king-block-title">{{ title }}</h3>
+            </div>
+            <div class="king-block-content">
+                <!-- 水平布局表单-1 Start -->
+                <form class="form-horizontal" method="POST">
+                    <div class="form-group">
+                        <label for="inputName1" class="col-sm-3 control-label">名称：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputName1" placeholder="输入便于识别的名称">
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDescription1" class="col-sm-3 control-label">描述：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputDescription1" placeholder="存储过程的详细说明">
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputConnectionInfo1" class="col-sm-3 control-label">数据库连接：</label>
+                        <div class="col-sm-7">
+                            <select name="" id="inputConnectionInfo1" class="form-control">
+                                <option value="">--</option>
+                                {% if items %}
+                                {% for item in items %}
+                                    <option value="{{ item.id }}">{{ item.database }}</option>
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputStorageSelect1" class="col-sm-3 control-label">存储过程：</label>
+                        <div class="col-sm-7">
+                            <select name="" id="inputStorageSelect1" class="form-control" style="width:300px;">
+                            </select>
+                        </div>
+                    </div>
+                    <div id="inputStorageArgumentsContainer"></div>
+                    <div class="form-group">
+                        <div class="col-sm-7 col-sm-offset-3">
+                        <a class="king-btn king-border king-round king-primary col-sm-12" id="btn_add_arguments" title="添加参数">
+                            <i class="fa"></i>添加参数
+                        </a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-7 col-sm-offset-3">
+                            <input type="button" class="king-btn king-success mr10" id="btn_add" value="添加">
+                            <input type="reset" class="king-btn king-default" value="取消">
+                        </div>
+                    </div>
+                </form>
+                <!-- 水平布局表单-1 End -->
+                <template id="tpl_14904127714141">
+                    <option value="#value#">#text#</option>
+                </template>
+                <template id="tpl_14904127714142">
+                    <div class="form-group">
+                        <div class="col-sm-7 col-sm-offset-3">
+                            <label for="inputStorageArgumentName#id#">参数：</label>
+                            <input type="text" id="inputStorageArgumentName#id#" placeholder="参数名称">
+                        </div>
+                        <div class="col-sm-7 col-sm-offset-3">
+                            <label for="inputStorageArgumentDescription#id#">描述：</label>
+                            <input type="text" id="inputStorageArgumentDescription#id#" placeholder="参数说明">
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    var id_index = $('#inputStorageArgumentsContainer > .form-group').length;
+
+    function renderTpl(str, cfg) {
+        var re = /(#(.+?)#)/g;
+        return str.replace(re, function() {
+            var val = cfg[arguments[2]]+'';
+            if(typeof val == 'undefined') {
+                val = '';
+            }
+            return val;
+        });
+    };
+
+    $(function() {
+        $('#inputConnectionInfo1').change(function () {
+            var connection_info_id = $('#inputConnectionInfo1').val();
+            if (connection_info_id == "") {
+                $("#inputStorageSelect1").empty();
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: window.location.pathname + "system_config/procedures/",
+                data: { 'connection_info_id': connection_info_id },
+                dataType: "json",
+                success: function (response) {
+                    if(response.result) {
+                        _html = '';
+                        tpl = $('#tpl_14904127714141').html();
+                        list = response.data;
+                        for (var i=0; i<list.length; i++){
+                            _html += renderTpl(tpl, {'value': list[i], 'text': list[i]})
+                        }
+                        $("#inputStorageSelect1").append(_html);
+                    } else {
+                        $("#inputStorageSelect1").empty();
+                    }
+                }
+            });
+        });
+
+        $('#btn_add_arguments').click(function () {
+            id_index++;
+            _html = '';
+            tpl = $('#tpl_14904127714142').html();
+            _html = renderTpl(tpl, {'id': id_index } );
+            $('#inputStorageArgumentsContainer').append(_html);
+        });
+
+        $('#btn_add').click(function () {
+            var args = '';
+            for (var i=1; i <= id_index; i++) {
+                var key = $('#inputStorageArgumentName' + i).val().trim();
+                var val = $('#inputStorageArgumentDescription' + i).val().trim();
+                args += "\"" + i + "\"" + ":{" + "\"" + key + "\"" + ":" + "\"" + val + "\"" + "},";
+            }
+            args = "{" + args.replace(/,\s*$/g, '') + "}";
+
+            data = {
+                'name': $('#inputName1').val().trim(),
+                'description': $('#inputDescription1').val().trim(),
+                'connection_info_id': $('#inputConnectionInfo1').val().trim(),
+                'storage_name': $('#inputStorageSelect1').val(),
+                'args': args,
+            };
+
+            $.ajax({
+                type: "POST",
+                url: window.location.pathname + "system_config/add/" + {{ object_type }} + "/",
+                data: data,
+                dataType: "json",
+                success: function (response) {
+                    if(response.result) {
+                        $topBar({
+                            text: '操作成功！',
+                            setClass: 'bg-success',
+                            timeOut: 5000
+                        });
+                        $.get(
+                            url = window.location.pathname + 'system_config/list/' + {{ object_type }} + '/',
+                            function(response, textStatus){
+                                if(response.result) {
+                                    $("#content_14904127718185").html(response.data);
+                                } else {
+                                    $topBar({
+                                        text: '操作失败: ' + response.message,
+                                        setClass: 'bg-danger'
+                                    });
+                                }
+                            },
+                            'json');
+                    } else {
+                        $topBar({
+                            text: '操作失败: ' + response.message,
+                            setClass: 'bg-danger'
+                        });
+                    }
+                },
+            });
+        });
+    });
+    </script>
+</div>

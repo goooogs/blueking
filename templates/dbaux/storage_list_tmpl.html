@@ -1,0 +1,80 @@
+ <div class="panel panel-default pannel-overflow panel-tables table7_demo">
+<div class="panel-body panel-search-body">
+    <a class="king-btn king-radius king-primary" id="btn_add" title="{{ title }}">{{ title }}</a>
+</div>
+<div class="panel-content">
+    <!-- 带操作按钮表格-2 Start -->
+    <table class="table table-header-bg table-hover mb0" id="table_demo2">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>名称</th>
+                <th>存储过程</th>
+                <th>所属数据库</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if items %}
+            {% for item in items %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td><a href="{% url 'dbaux:detail' object_type item.id  %}">{{ item.name }}</a></td>
+                <td><a href="{% url 'dbaux:detail' object_type item.id  %}">{{ item.storage_name }}</a></td>
+                <td>{{ item.connection_info.database }}</td>
+                <td>
+                    <button class="btn btn-xs btn-primary" title="编辑">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </button>
+                    <button class="btn btn-xs btn-danger" title="删除">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    <!-- 带操作按钮表格-2 End -->
+</div>
+<script type="text/javascript">
+    $('#table_demo2 > tbody').find('a').click(function (event) {
+        $.get(
+            url = $(this).attr('href'),
+            function(response, textStatus){
+                if(response.result) {
+                    $("#content_14904127718185").html(response.data);
+                } else {
+                    $topBar({
+                        text: '操作失败: ' + response.message,
+                        setClass: 'bg-danger'
+                    });
+                }
+            },
+            'json');
+        event.preventDefault();
+    })
+
+    $('#table_demo2').find('.glyphicon-remove').parent('button').click(function () {
+        if (confirm('确定要删除？')) {
+            $(this).closest('tr').remove();
+        }
+    });
+
+    $("#btn_add").click(function (e) {
+        $.get(
+            url = window.location.pathname + 'system_config/add/' + {{ object_type }} +'/',
+            function (response, textStatus) {
+                if (response.result) {
+                    $("#content_14904127718185").html(response.data);
+                } else {
+                    $topBar({
+                        text: '操作失败: ' + response.message,
+                        setClass: 'bg-danger'
+                    });
+                }
+            },
+            'json');
+    });
+</script>
+</div>

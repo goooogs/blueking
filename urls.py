@@ -18,7 +18,7 @@ urlpatterns = patterns(
     # 应用功能开关控制--请勿修改
     url(r'^app_control/', include('app_control.urls')),
     # 数据库辅助系统
-    url(r'^dbaux', include('dbaux.urls')),
+    url(r'^dbaux/', include('dbaux.urls', namespace='dbaux')),
 )
 
 

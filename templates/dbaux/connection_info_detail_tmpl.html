@@ -1,0 +1,95 @@
+<!--HTML-->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="king-block king-block-bordered">
+            <div class="king-block-header king-gray-light">
+                <ul class="king-block-options">
+                    <li>
+                        <button type="button"><i class="fa fa-cog"></i></button>
+                    </li>
+                </ul>
+                <h3 class="king-block-title">{{ title }} ID: {{ item.id }}</h3>
+            </div>
+            <div class="king-block-content">
+                <!-- 水平布局表单-1 Start -->
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="inputName1" class="col-sm-3 control-label">名称：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputName1" placeholder="输入便于识别的名称" value="{{ item.name }}" disabled>
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputHostAddress1" class="col-sm-3 control-label">数据库主机：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputHostAddress1" placeholder="IP地址" value="{{ item.host }}" disabled>
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPort1" class="col-sm-3 control-label">端口：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputPort1" placeholder="数据库服务端口" value="{{ item.port }}" disabled>
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputUserName1" class="col-sm-3 control-label">用户名：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputUserName1" placeholder="连接数据库的用户名" value="{{ item.user }}" disabled>
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword1" class="col-sm-3 control-label">密码：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputPassword1" placeholder="连接数据库的密码" value="{% if item.password %} {{ item.password }} {% else %}<空>{% endif %}" disabled>
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDatabaseName1" class="col-sm-3 control-label">数据库名称：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputDatabaseName1" placeholder="" value="{{ item.database }}" disabled>
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCharset1" class="col-sm-3 control-label">连接字符集：</label>
+                        <div class="col-sm-7">
+                            <select name="" id="inputCharset1" class="form-control" disabled>
+                                <option value="{{ item.charset }}">{{ item.charset }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-7 col-sm-offset-3">
+                            <input type="button" class="king-btn king-success mr10" id="btn_back" value="返回">
+                        </div>
+                    </div>
+                </form>
+                <!-- 水平布局表单-1 End -->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    $(function() {
+        $('#btn_back').click(function () {
+            $.get(
+                url = window.location.pathname + 'system_config/list/' + {{ object_type }} +'/',
+                function (response, textStatus) {
+                    if (response.result) {
+                        $("#content_14904127718185").html(response.data);
+                    } else {
+                        $topBar({
+                            text: '操作失败: ' + response.message,
+                            setClass: 'bg-danger'
+                        });
+                    }
+                },
+                'json');
+        });
+    });
+    </script>
+</div>

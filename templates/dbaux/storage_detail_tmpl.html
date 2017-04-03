@@ -1,0 +1,89 @@
+<!--HTML-->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="king-block king-block-bordered">
+            <div class="king-block-header king-gray-light">
+                <ul class="king-block-options">
+                    <li>
+                        <button type="button"><i class="fa fa-cog"></i></button>
+                    </li>
+                </ul>
+                <h3 class="king-block-title">{{ title }} ID: {{ item.id }}</h3>
+            </div>
+            <div class="king-block-content">
+                <!-- 水平布局表单-1 Start -->
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="inputName1" class="col-sm-3 control-label">名称：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputName1" placeholder="输入便于识别的名称" value="{{ item.name }}" disabled>
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputDescription1" class="col-sm-3 control-label">描述：</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="inputDescription1" placeholder="存储过程的详细说明" value="{{ item.description }}" disabled>
+                        </div>
+                        <span class="text-danger mt5 fl">*</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputConnectionInfo1" class="col-sm-3 control-label">数据库连接：</label>
+                        <div class="col-sm-7">
+                            <select name="" id="inputConnectionInfo1" class="form-control" disabled>
+                                <option value="{{ item.connection_info.id }}">{{ item.connection_info.database }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputStorageSelect1" class="col-sm-3 control-label">存储过程：</label>
+                        <div class="col-sm-7">
+                            <select name="" id="inputStorageSelect1" class="form-control" style="width:300px;" disabled>
+                                <option value="{{ item.id }}">{{ item.storage_name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="inputStorageArgumentsContainer">
+                        {% for arg in item.storageargument_set.all %}
+                        <div class="form-group">
+                            <div class="col-sm-7 col-sm-offset-3">
+                                <label for="inputStorageArgumentName#id#">参数：</label>
+                                <input type="text" id="inputStorageArgumentName#id#" placeholder="参数名称" value="{{ arg.name }}" disabled>
+                            </div>
+                            <div class="col-sm-7 col-sm-offset-3">
+                                <label for="inputStorageArgumentDescription#id#">描述：</label>
+                                <input type="text" id="inputStorageArgumentDescription#id#" placeholder="参数说明" value="{{ arg.description }}" disabled>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-7 col-sm-offset-3">
+                            <input type="button" class="king-btn king-success mr10" id="btn_back" value="返回">
+                        </div>
+                    </div>
+                </form>
+                <!-- 水平布局表单-1 End -->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    $(function() {
+        $('#btn_back').click(function () {
+            $.get(
+                url = window.location.pathname + 'system_config/list/' + {{ object_type }} +'/',
+                function (response, textStatus) {
+                    if (response.result) {
+                        $("#content_14904127718185").html(response.data);
+                    } else {
+                        $topBar({
+                            text: '操作失败: ' + response.message,
+                            setClass: 'bg-danger'
+                        });
+                    }
+                },
+                'json');
+        });
+    });
+    </script>
+</div>
