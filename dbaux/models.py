@@ -48,7 +48,7 @@ class StorageArgument(models.Model):
         return self.name
 
     class Meta:
-        ordering = ["id"]
+        ordering = ["storage", "index"]
         unique_together = (("name",), ("storage", "index"),)
 
 
